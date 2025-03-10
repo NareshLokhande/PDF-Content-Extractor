@@ -2,6 +2,7 @@ package com.example.pdfocr.controller;
 
 import java.util.Map;
 
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -44,11 +45,13 @@ public class PdfController {
             HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
             // Send request to FastAPI OCR service
-            ResponseEntity<Map> response = restTemplate.exchange(
+            ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
                     OCR_SERVICE_URL,
                     HttpMethod.POST,
                     requestEntity,
-                    Map.class);
+                    new ParameterizedTypeReference<Map<String, Object>>() {
+                    }
+            );
 
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
