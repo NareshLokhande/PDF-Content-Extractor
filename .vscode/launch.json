@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-PdfocrApplication<pdfocr>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.example.pdfocr.PdfocrApplication",
+      "projectName": "pdfocr",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}

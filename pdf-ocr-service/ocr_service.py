@@ -1,0 +1,45 @@
+import os
+from fastapi import FastAPI, UploadFile, File
+import pytesseract
+from pdf2image import convert_from_bytes
+from PIL import Image
+from fastapi.middleware.cors import CORSMiddleware
+
+
+app = FastAPI()
+
+origins = ["http://localhost:3000", "http://localhost:8080"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# (Windows only) Uncomment this if you installed Tesseract in a custom location
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+
+# Manually set Poppler path (use your actual path)
+POPPLER_PATH = r"C:\poppler-24.08.0\Library\bin"
+os.environ["PATH"] += os.pathsep + POPPLER_PATH
+
+@app.post("/extract-text")
+async def extract_text(file: UploadFile = File(...)):
+    try:
+        # Read the PDF file
+        pdf_bytes = await file.read()
+        
+        # Convert PDF to images
+        images = convert_from_bytes(pdf_bytes, poppler_path=POPPLER_PATH)
+
+        # Extract text from each image
+        extracted_text = ""
+        for img in images:
+            extracted_text += pytesseract.image_to_string(img) + "\n"
+
+        return {"filename": file.filename, "text": extracted_text.strip()}
+
+    except Exception as e:
+        return {"error": str(e)}
