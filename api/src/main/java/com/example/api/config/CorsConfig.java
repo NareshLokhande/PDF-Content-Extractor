@@ -1,4 +1,4 @@
-package com.example.pdfocr.config;
+package com.example.api.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.lang.NonNull;

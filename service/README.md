@@ -8,13 +8,13 @@ This is a FastAPI-based microservice for extracting text from PDF files using Te
 
 ### 1️⃣ Clone the Repository
 ```sh
-git clone <your-repo-url>
-cd pdf-ocr-service
+git clone https://github.com/NareshLokhande/Pdf2Html.git
+cd service
 ```
 
 ### 2️⃣ Create a Virtual Environment
 ```sh
-python -m venv venv
+py -m venv venv
 ```
 
 ### 3️⃣ Activate the Virtual Environment
@@ -35,7 +35,13 @@ pip install -r requirements.txt
 
 ### 5️⃣ Run the Service
 ```sh
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn ocr_service:app --host 0.0.0.0 --port 8000 --reload
+```
+
+### 🔴 Deactivate Virtual Environment
+
+```sh
+deactivate
 ```
 
 ## 🔧 Updating Dependencies

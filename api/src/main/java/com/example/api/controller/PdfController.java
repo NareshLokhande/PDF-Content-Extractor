@@ -1,4 +1,4 @@
-package com.example.pdfocr.controller;
+package com.example.api.controller;
 
 import java.util.Map;
 
@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.pdfocr.utils.MultipartInputStreamFileResource;
+import com.example.api.utils.MultipartInputStreamFileResource;
 
 @RestController
 @RequestMapping("/api/pdf")

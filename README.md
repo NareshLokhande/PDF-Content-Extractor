@@ -2,16 +2,16 @@
 This project extracts text from PDFs using OCR and displays it in a web application while maintaining formatting.
 
 ## 🛠 Tech Stack
-- Backend API: Spring Boot (`pdf-api`)
-- OCR Service: FastAPI + Tesseract (`ocr-service`)
-- Frontend: React + Tailwind (`pdf-ui`)
+- Backend API: Spring Boot (`api`)
+- OCR Service: FastAPI + Tesseract (`service`)
+- Frontend: React + Tailwind (`ui`)
 
 ## 🚀 Project Structure
 ```sh
 pdf-to-html-project/
-│── pdf-api/           # Spring Boot Backend (Handles API requests)
-│── ocr-service/       # Python OCR Service (Extracts text from PDFs)
-│── pdf-ui/            # React Frontend (Displays extracted text)
+│── api/           # Spring Boot Backend (Handles API requests)
+│── service/       # Python OCR Service (Extracts text from PDFs)
+│── ui/            # React Frontend (Displays extracted text)
 │── README.md          # Project documentation
 │── .gitignore         # Ignore unnecessary files
 └── ...
@@ -25,10 +25,10 @@ git clone https://github.com/NareshLokhande/Pdf2Html.git
 cd pdf2HTML
 ```
 
-### 2️⃣ Backend - Spring Boot (pdf-api)
-#### 📍 Navigate to the pdf-api folder
+### 2️⃣ Backend - Spring Boot (api)
+#### 📍 Navigate to the api folder
 ```sh
-cd pdf-api
+cd api
 ```
 
 #### ⚙️ Build and Run:
@@ -40,17 +40,17 @@ mvnw.cmd spring-boot:run  # For Windows
 
 #### 💡 API Runs On: `http://localhost:8080`
 
-### 3️⃣ OCR Service - Python (ocr-service)
-#### 📍 Navigate to the ocr-service folder
+### 3️⃣ OCR Service - Python (service)
+#### 📍 Navigate to the service folder
 
 ```sh
-cd ../ocr-service
+cd ../service
 ```
 
 #### ⚙️ Setup Virtual Environment
 
 ```sh
-python -m venv venv
+py -m venv venv
 ```
 
 #### 🟢 Activate Virtual Environment
@@ -73,16 +73,22 @@ pip install -r requirements.txt
 
 #### 🚀 Run the OCR Service
 ```sh
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+uvicorn ocr_service:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-#### 💡 Service Runs On: http://localhost:8000
+#### 🔴 Deactivate Virtual Environment
 
-### 4️⃣ Frontend - React (pdf-ui)
-#### 📍 Navigate to the pdf-ui folder
+  ```sh
+  deactivate
+  ```
+
+#### 💡 Service Runs On: `http://localhost:8000`
+
+### 4️⃣ Frontend - React (ui)
+#### 📍 Navigate to the ui folder
 
 ```sh
-cd ../pdf-ui
+cd ../ui
 ```
 
 #### 📦 Install Dependencies
@@ -102,7 +108,7 @@ npm start
 | Component           | Endpoint           | Description                        |
 |--------------------|------------------|--------------------------------|
 | **OCR Service**    | `POST /extract-text` | Uploads PDF and extracts text |
-| **Spring Boot API** | `GET /pdf/data`   | Fetches extracted text data    |
+| **Spring Boot API** | `GET /api/pdf/upload`   | Fetches extracted text data    |
 | **Frontend**       | `/`               | Displays extracted text        |
 
 

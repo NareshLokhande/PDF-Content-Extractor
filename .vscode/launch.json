@@ -9,6 +9,16 @@
       "projectName": "pdfocr",
       "args": "",
       "envFile": "${workspaceFolder}/.env"
+    },
+    {
+      "type": "java",
+      "name": "Spring Boot-PdfocrApplication<api>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.example.api.PdfocrApplication",
+      "projectName": "api",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
     }
   ]
 }

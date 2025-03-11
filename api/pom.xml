@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.example</groupId>
-	<artifactId>pdfocr</artifactId>
+	<artifactId>api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>pdfocr</name>
+	<name>api</name>
 	<description>Project to Convert Pdf to HTML</description>
 	<url/>
 	<licenses>

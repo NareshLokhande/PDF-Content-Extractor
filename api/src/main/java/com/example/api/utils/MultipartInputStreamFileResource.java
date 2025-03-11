@@ -1,4 +1,4 @@
-package com.example.pdfocr.utils;
+package com.example.api.utils;
 
 import org.springframework.core.io.InputStreamResource;
 
