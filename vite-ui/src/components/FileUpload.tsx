@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import { FaCloudUploadAlt, FaFilePdf } from 'react-icons/fa';
 import PulseLoader from 'react-spinners/PulseLoader';
+import '../assets/css/dropzone.css'
 
 // Define the type for the extracted data
 interface ExtractedData {
