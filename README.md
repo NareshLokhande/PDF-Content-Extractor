@@ -1,17 +1,17 @@
-# 📄 PDF to HTML Converter
-This project extracts text from PDFs using OCR and displays it in a web application while maintaining formatting.
+# 📄 Pdf Content Extractor
+This project extracts text and images from PDFs using OCR and displays it in a web application.
 
 ## 🛠 Tech Stack
 - Backend API: Spring Boot (`api`)
 - OCR Service: FastAPI + Tesseract (`service`)
-- Frontend: React + Tailwind (`ui`)
+- Frontend: React + TypeScript + Vite (`vite-ui`)
 
 ## 🚀 Project Structure
 ```sh
 pdf-to-html-project/
 │── api/           # Spring Boot Backend (Handles API requests)
 │── service/       # Python OCR Service (Extracts text from PDFs)
-│── ui/            # React Frontend (Displays extracted text)
+│── vite-ui/            # React Frontend (Displays extracted text)
 │── README.md          # Project documentation
 │── .gitignore         # Ignore unnecessary files
 └── ...
@@ -84,11 +84,11 @@ uvicorn ocr_service:app --host 0.0.0.0 --port 8000 --reload
 
 #### 💡 Service Runs On: `http://localhost:8000`
 
-### 4️⃣ Frontend - React (ui)
-#### 📍 Navigate to the ui folder
+### 4️⃣ Frontend - Vite (vite-ui)
+#### 📍 Navigate to the vite-ui folder
 
 ```sh
-cd ../ui
+cd ../vite-ui
 ```
 
 #### 📦 Install Dependencies
@@ -96,13 +96,21 @@ cd ../ui
 npm install
 ```
 
-#### 🚀 Run the React App
+#### 🚀 Run the Vite App
 ```sh
-npm start
+npm run dev
 ```
 
-#### 💡 Frontend Runs On: `http://localhost:3000`
+#### 💡 Frontend Runs On: `http://localhost:5173`
 
+#### **Run your Vite project**:
+```sh
+npm run build && npm run preview
+```
+
+#### 💡 Frontend Runs On: `http://localhost:4173`
+
+Access it on:
 ## 🔗 API Endpoints Overview
 
 | Component           | Endpoint           | Description                        |

@@ -1,29 +1,32 @@
-// src/components/ImageViewer.tsx
 import React from 'react';
+import { downloadImage } from '../utils/downloadImage';
 
-// Props for images
 interface ImageViewerProps {
   images: string[];
+  setFullscreenIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-const ImageViewer: React.FC<ImageViewerProps> = ({ images }) => (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-    {images.length > 0 ? (
-      images.map((src, index) => (
-        <div
-          key={index}
-          className="border rounded-lg overflow-hidden shadow-sm"
+const ImageViewer: React.FC<ImageViewerProps> = ({
+  images,
+  setFullscreenIndex,
+}) => (
+  <div className="image-grid">
+    {images.map((img, idx) => (
+      <div key={idx} className="image-wrapper">
+        <img
+          src={`data:image/png;base64,${img}`}
+          alt={`Extracted Image ${idx + 1}`}
+          className="extracted-image"
+          onClick={() => setFullscreenIndex(idx)}
+        />
+        <button
+          onClick={() => downloadImage(img, idx)}
+          className="download-btn"
         >
-          <img
-            src={`data:image/png;base64,${src}`}
-            alt={`Extracted ${index + 1}`}
-            className="w-full h-auto"
-          />
-        </div>
-      ))
-    ) : (
-      <p className="text-gray-500">No images extracted.</p>
-    )}
+          Download
+        </button>
+      </div>
+    ))}
   </div>
 );
 
