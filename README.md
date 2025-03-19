@@ -110,30 +110,55 @@ npm run build && npm run preview
 
 #### 💡 Frontend Runs On: `http://localhost:4173`
 
+---
 Access it on:
 ## 🔗 API Endpoints Overview
 
-| Component           | Endpoint           | Description                        |
-|--------------------|------------------|--------------------------------|
-| **OCR Service**    | `POST /extract-text` | Uploads PDF and extracts text |
-| **Spring Boot API** | `GET /api/pdf/upload`   | Fetches extracted text data    |
-| **Frontend**       | `/`               | Displays extracted text        |
+| Component            | Endpoint              | Description                   |
+|----------------------|-----------------------|-------------------------------|
+| **OCR Service**      | `POST /extract-text`  | Uploads PDF and extracts text |
+| **Spring Boot API**  | `GET /api/pdf/upload` | Fetches extracted text data   |
+| **Frontend**         | `/`                   | Displays extracted text       |
+
+## 🛠️ Environment Setup
+To run this project, create the following .env files and fill in the required values.
+
+### 📂 API Service (`api/.env`)
+```sh
+# Spring Boot Environment Variables
+DB_URL=<your-database-url>
+DB_USERNAME=<your-db-username>
+DB_PASSWORD=<your-db-password>
+
+# Other configurations
+JWT_SECRET=<your-jwt-secret>
+```
+
+### 📂 Frontend (`vite-ui/.env`)
+
+```sh
+# Vite Environment Variables
+VITE_API_URL=http://localhost:8080
+VITE_PUBLIC_KEY=<your-public-key>
+```
+
+Ensure you do not commit your `.env` files for security reasons.
 
 
-### 🛠 Common Issues & Fixes
+## 🛠 Common Issues & Fixes
 1. Port Conflicts?
-  - Use --port 8001 for FastAPI or change the React port using:
-    ```sh
-    set PORT=3001 && npm start
-    ```
+    - Use --port 8001 for FastAPI or change the React port using:
+      ```sh
+      set PORT=3001 && npm start
+      ```
 
 2. Missing Dependencies?
-
-- Run `pip install -r requirements.txt` (Python)
-- Run `npm install` (React)
+    - Run `pip install -r requirements.txt` (Python)
+    - Run `npm install` (React)
 
 3. OCR Not Working?
 
 Install Tesseract OCR & add it to the system `PATH`.
+
 ## 🤝 Contributing
 Pull requests are welcome! Please ensure new features are properly documented. 🚀
