@@ -1,3 +1,4 @@
+# Using Opencv and Tesseract to extract text from images
 import os
 import re
 from fastapi import FastAPI, UploadFile, File
@@ -7,6 +8,8 @@ from PIL import Image
 from fastapi.middleware.cors import CORSMiddleware
 import base64
 from io import BytesIO
+import cv2
+import numpy as np
 
 app = FastAPI()
 
@@ -35,44 +38,70 @@ def image_to_base64(image):
     return base64.b64encode(buffer.getvalue()).decode("utf-8")  # Return as Base64-encoded string
 
 
-# Extract Question Number Regions
-def extract_question_regions(image, padding_x=600, padding_y=600):
+def extract_question_regions(image, padding_x=600, padding_y=600, min_area=1000):
     """
     Identify and crop regions for diagrams based on question numbers.
+    Improved to handle fragmented diagrams using morphological operations.
 
     Parameters:
     - image: Input PIL image.
-    - padding_x: Extra width (right side) around the question number.
-    - padding_y: Extra height (below) to capture diagrams.
+    - padding_x: Width to the right for capturing diagrams.
+    - padding_y: Height below for diagrams.
+    - min_area: Minimum contour area to consider a diagram as "important."
 
     Returns:
     - List of cropped images (around question numbers).
     """
     question_positions = []
-    question_pattern = re.compile(r"(\b\d{1,2}[.)])|(Q\d{1,2})")  # Matches '1.', '2)', '(3)', 'Q4'
+    question_pattern = re.compile(r"(\b\d{1,2}[.)])|(Q\d{1,2})")  # Matches '1.', '2)', 'Q4'
+
+    # Convert PIL image to OpenCV format
+    open_cv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
 
     # Extract OCR data with bounding boxes
     data = pytesseract.image_to_data(image, output_type=pytesseract.Output.DICT)
 
-    # Locate all question numbers using the regex pattern
     for i, word in enumerate(data["text"]):
         if question_pattern.search(word):
             # Get the bounding box of the question number
             x, y, w, h = data["left"][i], data["top"][i], data["width"][i], data["height"][i]
 
-            # Crop area:
-            #   - Left: Start from the question number's x position.
-            #   - Right: Extend more on the right to capture diagrams (padding_x).
-            #   - Top: Start from the question number's y position.
-            #   - Bottom: Go downwards to capture diagrams (padding_y).
-            x1, y1 = max(0, x), max(0, y)
+            # Define the diagram region (below and to the right)
+            x1, y1 = max(0, x), max(0, y + h)
             x2, y2 = min(image.width, x + w + padding_x), min(image.height, y + h + padding_y)
 
-            question_positions.append((x1, y1, x2, y2))
+            cropped = open_cv_image[y1:y2, x1:x2]
 
-    # Crop and return the regions
+            # Preprocess cropped region for better contour detection
+            gray = cv2.cvtColor(cropped, cv2.COLOR_BGR2GRAY)
+            blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+
+            # Adaptive thresholding to handle varying diagram intensities
+            thresholded = cv2.adaptiveThreshold(blurred, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 31, 5)
+
+            # Apply morphological closing to connect fragmented diagram parts
+            kernel = np.ones((5, 5), np.uint8)
+            closed = cv2.morphologyEx(thresholded, cv2.MORPH_CLOSE, kernel)
+
+            # Find contours
+            contours, _ = cv2.findContours(closed, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+            # Sum all contour areas to capture fragmented diagrams
+            total_area = sum(cv2.contourArea(cnt) for cnt in contours)
+
+            print(f"Detected region size: {cropped.shape}, Total contour area: {total_area}")
+
+            # Include diagram if the total area meets the threshold
+            if total_area >= min_area:
+                question_positions.append((x1, y1, x2, y2))
+                print("✅ Diagram accepted!")
+            else:
+                print("❌ Diagram rejected (too small or fragmented).")
+
+    # Crop and return valid diagram regions
     cropped_images = [image.crop(pos) for pos in question_positions]
     return cropped_images
+
 
 # PDF Text and Image Extraction Endpoint
 @app.post("/extract-text")
@@ -121,7 +150,7 @@ async def extract_text(file: UploadFile = File(...)):
     except Exception as e:
         return {"error": str(e)}
     
-    
+
 # import os
 # import re
 # from fastapi import FastAPI, UploadFile, File
@@ -160,13 +189,16 @@ async def extract_text(file: UploadFile = File(...)):
 
 
 # # Extract Question Number Regions
-# def extract_question_regions(image, padding=400):
+# # Extract Question Number Regions (Exclude Question Text in Crop)
+# def extract_question_regions(image, padding_x=550, padding_y=550, offset_y=50):
 #     """
-#     Identify and crop regions around question numbers (e.g., '1.', '(2)', 'Q3').
+#     Identify and crop regions for diagrams below and to the right of question numbers.
 
 #     Parameters:
 #     - image: Input PIL image.
-#     - padding: Space (in pixels) around the question number.
+#     - padding_x: Extra width (right side) around the question number.
+#     - padding_y: Extra height (below) to capture diagrams.
+#     - offset_y: Vertical offset to start cropping below the question.
 
 #     Returns:
 #     - List of cropped images (around question numbers).
@@ -183,16 +215,15 @@ async def extract_text(file: UploadFile = File(...)):
 #             # Get the bounding box of the question number
 #             x, y, w, h = data["left"][i], data["top"][i], data["width"][i], data["height"][i]
 
-#             # Calculate the region to crop with padding
-#             x1, y1 = max(0, x - padding), max(0, y - padding)
-#             x2, y2 = min(image.width, x + w + padding), min(image.height, y + h + padding)
+#             # Start cropping BELOW the question number by adding offset_y
+#             x1, y1 = max(0, x), min(image.height, y + h + offset_y)
+#             x2, y2 = min(image.width, x + w + padding_x), min(image.height, y + h + padding_y)
 
 #             question_positions.append((x1, y1, x2, y2))
 
-#     # Crop the regions around question numbers
+#     # Crop and return the regions
 #     cropped_images = [image.crop(pos) for pos in question_positions]
 #     return cropped_images
-
 
 # # PDF Text and Image Extraction Endpoint
 # @app.post("/extract-text")
