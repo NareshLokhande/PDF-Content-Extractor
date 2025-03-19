@@ -123,6 +123,22 @@ Access it on:
 ## 🛠️ Environment Setup
 To run this project, create the following .env files and fill in the required values.
 
+1. Navigate to the respective folders:
+    ```sh
+    cd api
+    cp .env.example .env
+    ```
+
+    ```sh
+    cd vite-ui
+    cp .env.example .env
+    ```
+
+2. Fill in the required values in each .env file.
+3. Ensure .env files are never committed to Git:
+    - `api/.gitignore`
+    - `vite-ui/.gitignore`
+
 ### 📂 API Service (`api/.env`)
 ```sh
 # Spring Boot Environment Variables
