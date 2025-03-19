@@ -2,6 +2,7 @@ package com.example.api.controller;
 
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -9,7 +10,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,10 +21,10 @@ import com.example.api.utils.MultipartInputStreamFileResource;
 
 @RestController
 @RequestMapping("/api/pdf")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class PdfController {
 
-    private static final String OCR_SERVICE_URL = "http://127.0.0.1:8000/extract-text";
+    @Value("${OCR_SERVICE_URL}")
+    private String ocrServiceUrl;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadPdf(@RequestParam("file") MultipartFile file) {
@@ -42,12 +42,11 @@ public class PdfController {
             HttpEntity<LinkedMultiValueMap<String, Object>> requestEntity = new HttpEntity<>(body, headers);
 
             ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                    OCR_SERVICE_URL,
+                    ocrServiceUrl,
                     HttpMethod.POST,
                     requestEntity,
-                    new ParameterizedTypeReference<Map<String, Object>>() {
-                    }
-            );
+                    new ParameterizedTypeReference<>() {
+                    });
 
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
@@ -55,7 +54,6 @@ public class PdfController {
         }
     }
 }
-
 
 
 
